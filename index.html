@@ -1,1 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicPlay - Создавай плейлисты, слушай музыку бесплатно</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 50%, #0f0f28 100%);
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .background-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: #ff00ff;
+            top: -10%;
+            left: -5%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 250px;
+            height: 250px;
+            background: #00ffff;
+            bottom: 5%;
+            right: -5%;
+            animation-delay: 10s;
+        }
+
+        .orb-3 {
+            width: 200px;
+            height: 200px;
+            background: #ff0080;
+            top: 50%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(20px, -20px); }
+            50% { transform: translate(0, 20px); }
+            75% { transform: translate(-20px, -10px); }
+        }
+
+        /* Main content */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            border-bottom: 2px solid #ff00ff;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff00ff, #00ffff, transparent);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff00ff, #00ffff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            animation: glow-text 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-text {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 0, 255, 0.3); }
+            50% { text-shadow: 0 0 40px rgba(255, 0, 255, 0.6); }
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .hero-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .hero-content .highlight {
+            color: #ff00ff;
+            font-weight: bold;
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-icon {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: 0 0 60px rgba(255, 0, 255, 0.5);
+            animation: pulse-icon 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-icon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Features Section */
+        .features {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #ff00ff;
+            margin-bottom: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border: 2px solid #ff00ff;
+            padding: 30px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 0, 255, 0.3);
+            border-color: #00ffff;
+        }
+
+        .feature-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ffff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+        }
+
+        .feature-card p {
+            color: #a0a0a0;
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.05));
+            border: 2px solid #ff00ff;
+            padding: 60px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .cta-section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: #00ffff;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ff00ff, #ff0080);
+            color: #ffffff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.8);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-large {
+            padding: 18px 50px;
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 2px solid #ff00ff;
+            padding: 40px 20px;
+            text-align: center;
+            color: #808080;
+            position: relative;
+            z-index: 1;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff00ff, #00ffff, transparent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h2 {
+                font-size: 1.8rem;
+            }
+
+            .hero-visual {
+                height: 250px;
+            }
+
+            .music-icon {
+                width: 150px;
+                height: 150px;
+                font-size: 60px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .cta-section {
+                padding: 40px 20px;
+            }
+
+            .cta-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effect">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">MusicPlay</div>
+            <div class="tagline">Слушай. Создавай. Наслаждайся.</div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Музыка без ограничений</h2>
+                <p>
+                    Добро пожаловать в <span class="highlight">MusicPlay</span> — приложение для создания плейлистов и прослушивания музыки совершенно <span class="highlight">бесплатно</span>.
+                </p>
+                <p>
+                    Забудьте о сложности. Создавайте плейлисты за несколько кликов, слушайте любимые треки в любое время и наслаждайтесь музыкой без рекламы и ограничений.
+                </p>
+                <p style="margin-top: 25px;">
+                    <button class="btn btn-large" onclick="downloadApp()">Скачать</button>
+                </p>
+            </div>
+            <div class="hero-visual">
+                <div class="music-icon">🎵</div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2 class="section-title">Возможности</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>📻 Поиск музыки</h3>
+                    <p>Найдите любую песню мгновенно. Огромная библиотека музыки у вас в руках. Поиск работает быстро и эффективно.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⭐ Плейлисты</h3>
+                    <p>Создавайте собственные плейлисты и организуйте музыку по своему вкусу. Добавляйте, удаляйте и редактируйте треки на лету.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎧 Плеер</h3>
+                    <p>Мощный встроенный плеер с контролем громкости, прогресс-баром и поддержкой воспроизведения в высоком качестве.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💡 Рекомендации</h3>
+                    <p>Получайте персональные рекомендации на основе ваших предпочтений. Откройте для себя новую музыку каждый день.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ Быстро & Легко</h3>
+                    <p>Интуитивный интерфейс и быстрая загрузка. Ничего лишнего — только музыка, которую вы любите.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💎 Бесплатно</h3>
+                    <p>Полностью бесплатное приложение без скрытых платежей. Вся функциональность доступна для всех пользователей.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>Готовы начать?</h2>
+            <p>Присоединяйтесь к миллионам пользователей, которые уже слушают музыку на MusicPlay</p>
+            <button class="btn btn-large" onclick="downloadApp()">Загрузить приложение</button>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 MusicPlay. Все права защищены. | Сделано с ❤️ для любителей музыки</p>
+        </footer>
+    </div>
+
+    <script>
+        function downloadApp() {
+            // Open the download link in a new tab
+            const downloadWindow = window.open('https://workupload.com/start/ZVbsnd6K8e2', '_blank');
+            
+            // Close the window after 1 second
+            if (downloadWindow) {
+                setTimeout(() => {
+                    downloadWindow.close();
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
